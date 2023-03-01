@@ -24,21 +24,35 @@ autoinstall:
     config:
       - 
         type: disk
-        id: vda
-        path: /dev/vda
+        id: nvme-0
+        path: /dev/nvme0n1
         size: -1
         grub_device: true
         wipe: superblock-recursive
         preserve: false
       - 
+        type: disk
+        id: nvme-1
+        path: /dev/nvme0n1
+        size: -1
+        wipe: superblock-recursive
+        preserve: false
+      - 
         type: partition
         id: partition-0
+        device: nvme-0
+        wipe: superblock
+        preserve: false
+      - 
+        type: partition
+        id: partition-1
+        device: nvme-1
         wipe: superblock
         preserve: false
       - 
         type: lvm_volgroup
         id: vg-0
-        devices: [partition-0]
+        devices: [partition-0, partition-1]
         wipe: superblock
         preserve: false
       - 

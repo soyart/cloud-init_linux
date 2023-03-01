@@ -1,0 +1,3 @@
+#cloud-config
+instance-id: kh69
+hostname: my_box
