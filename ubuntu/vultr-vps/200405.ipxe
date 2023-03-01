@@ -1,10 +1,18 @@
 #!ipxe
-# ubuntu focal 20.04
-echo Starting Ubuntu 20.04 from boot.artnoi.com
 
+# ubuntu focal 20.04
+
+:retry_dhcp
+dhcp && isset ${filename} || goto retry_dhcp
+
+echo Starting Ubuntu 20.04 from boot.artnoi.com
+echo IP address: ${net0/ip}
+echo Subnet mask: ${net0/netmask}
+
+:start_load
 # $seedfrom used to find the user-data and meta-data files by nocloud-net provider for cloud-init.
 # the trailing slash is important, the cloud-init sticks 'meta-data' or 'user-data' right after it, without prepending a forward slash.
-set seedfrom https://boot.artnoi.com/ubuntu/vultr-vps/
+set seedfrom https://boot.artnoi.com/ubuntu/vultr--vps/
 
 # $base url is where the vmlinuz and initrd live.
 # they were fished out from the live-server iso file. the iso file is also in this directory.
@@ -13,6 +21,6 @@ set base https://boot.artnoi.com/ubuntu/images
 kernel ${base}/vmlinuz initrd=initrd autoinstall url=${base}/ubuntu-20.04.5-live-server-amd64.iso net.ifnames=0 biosdevname=0 ip=dhcp ds=nocloud-net;s=${seedfrom}
 initrd ${base}/initrd
 
-boot || goto failed
+boot || goto start_load
 
 goto start
