@@ -54,5 +54,5 @@ autoinstall:
       -
         type: mount
         id: mount-root
-        device: lvm-root
+        device: fs-root
         path: /
