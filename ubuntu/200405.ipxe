@@ -10,7 +10,7 @@ set seedfrom https://boot.artnoi.com/cloud-init/
 # they were fished out from the live-server iso file. the iso file is also in this directory.
 set base https://boot.artnoi.com/images
 
-kernel ${base}/vmlinuz initrd=initrd autoinstall url=${base}/ubuntu-20.04-live-server-amd64.iso net.ifnames=0 biosdevname=0 ip=dhcp ds=nocloud-net;s=${seedfrom}
+kernel ${base}/vmlinuz initrd=initrd autoinstall url=${base}/ubuntu-20.04.5-live-server-amd64.iso net.ifnames=0 biosdevname=0 ip=dhcp ds=nocloud-net;s=${seedfrom}
 initrd ${base}/initrd
 
 boot || goto failed
