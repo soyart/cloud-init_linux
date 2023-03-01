@@ -39,20 +39,25 @@ autoinstall:
         type: lvm_volgroup
         id: vg-0
         devices: [partition-0]
+        wipe: superblock
         preserve: false
       - 
         type: lvm_partition
         id: lvm-root
         volgroup: vg-0
+        wipe: superblock
         preserve: false
       -
         type: format
         id: fs-root
         volume: lvm-root
         fstype: btrfs
+        wipe: superblock
         preserve: false
       -
         type: mount
         id: mount-root
         device: fs-root
         path: /
+        wipe: superblock
+        preserve: false
