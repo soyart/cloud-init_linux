@@ -1,0 +1,58 @@
+#cloud-config
+autoinstall:
+  version: 1
+  disable_root: false
+  package_update: true
+
+  late-commands:
+      # Change GRUB and kernel parameter for vultr
+    - sed -e 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=3/' -e 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="log-level=3 vultr"/' -i /target/etc/default/grub
+  
+  packages:
+    - git
+    - neovim
+
+  users:
+    - name: root
+      passwd: $6$OIuihfLPRiTt$.PLG45PeSRhdwUzGfbIvQFTWWWIURJO1YMxlTyev4fF5mY1AA2qDwKQ2rX/SA0xeWk3svK5LZ3CHc5Af8XtJm0
+      lock_passwd: false
+      shell: /bin/bash
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDut/4qxp811CkRgGZnE2EYCAMmGu3LOACubjWa/yRYmvAZDZ1rCBSsaQ9wS26AcUPeaOgpFPXLvnEzBrIaCKBXLa1PAk+thpy6Sai1x61Lnvr7BoZ/VH3l94NBfcwN0cwhnjldCe7fW97olFD8Zk5bP1SEu6bO/Tzo9rEgoQOvR9mOBdBhAJG6tPSF1CVfzY3Nft2GNPf93zJLLkCij+PbQ5uQvKSqOJG4dF25KlojVMhiGN33vuUxvJ+iZpEDHneYcYHlchGGlnDkj/l9daJ6Z6tovVNtk9gJxM0pCvfU+oia7jmTEgFZ85+Q/iGSzVEoO/9DGRuGLPHr+CXnsg8YF2oAGPWYgGVLAWXJqZOSYfgniAhXPJKiVvQjJj+u5H3WEkaifggcRzRn0fhjACcRObUHdxuBKY+d96rUDJA3E6zkrVWjpCydLnq0xQPQsztm3sC+euLNm5wBlFQ5NW6WM81nUiEPSGD6nRv2TuDsQ9W3jb+X5aS3zfCWnT55/t0= artnoi@t14
+
+  storage:
+    config:
+      - 
+        type: disk
+        id: vda
+        path: /dev/vda
+        size: -1
+        grub_device: true
+        wipe: superblock-recursive
+        preserve: false
+      - 
+        type: partition
+        id: partition-0
+        wipe: superblock
+        preserve: false
+      - 
+        type: lvm_volgroup
+        id: vg-0
+        devices: [partition-0]
+        preserve: false
+      - 
+        type: lvm_partition
+        id: lvm-root
+        volgroup: vg-0
+        preserve: false
+      -
+        type: format
+        id: fs-root
+        volume: lvm-root
+        fstype: btrfs
+        preserve: false
+      -
+        type: mount
+        id: mount-root
+        device: lvm-root
+        path: /
