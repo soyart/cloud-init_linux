@@ -1,0 +1,32 @@
+#!ipxe
+
+# ubuntu focal 20.04
+
+:retry_dhcp
+dhcp && isset ${filename} || goto retry_dhcp
+
+cpuid --ext 29 && set arch x64 || set arch x86
+cpuid --ext 29 && set archb 64 || set archb 32
+cpuid --ext 29 && set archl amd64 || set archl i386
+
+set http_server https://boot.artnoi.com/ubuntu
+
+:start
+menu iPXE boot menu for ${initiator-iqn}
+item --key s vultre_vps  For Vultr VPS with 1 block device `vda`
+item vultr_bare          For Vultr Bare Metal with 2 NVME blcok devices
+
+choose --timeout ${menu-timeout} --default ${menu-default} selected || goto cancel
+set menu-timeout 0
+goto ${selected}
+
+:vultr_vps
+set autoinstall_seed ${http_server}/vultr-vps/
+
+:vultr_bare
+set autoinstall_seed ${http_server}/vultr-bare-metal/
+
+set base ${http_server}/images
+kernel ${base}/vmlinuz initrd=initrd autoinstall url=${base}/ubuntu-20.04.5-live-server-amd64.iso net.ifnames=0 biosdevname=0 ip=dhcp ds=nocloud-net;s=${autoinstall_seed}
+initrd ${base}/initrd
+boot || goto start
