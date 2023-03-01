@@ -1,0 +1,3 @@
+#cloud-config
+instance-id: kh_bare_metal
+hostname: my_bare_metal_box
