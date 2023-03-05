@@ -7,7 +7,8 @@ autoinstall:
   late-commands:
       # Change GRUB and kernel parameter for vultr
     - sed -e 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=3/' -e 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="log-level=3 vultr"/' -i /target/etc/default/grub
-  
+    - curtin in-target --target /target update-grub2
+
   packages:
     - git
     - neovim
@@ -22,7 +23,7 @@ autoinstall:
 
   storage:
     config:
-      - 
+      -
         type: disk
         id: nvme-0
         path: /dev/nvme0n1
@@ -30,32 +31,32 @@ autoinstall:
         grub_device: true
         wipe: superblock-recursive
         preserve: false
-      - 
+      -
         type: disk
         id: nvme-1
         path: /dev/nvme0n1
         size: -1
         wipe: superblock-recursive
         preserve: false
-      - 
+      -
         type: partition
         id: partition-0
         device: nvme-0
         wipe: superblock
         preserve: false
-      - 
+      -
         type: partition
         id: partition-1
         device: nvme-1
         wipe: superblock
         preserve: false
-      - 
+      -
         type: lvm_volgroup
         id: vg-0
         devices: [partition-0, partition-1]
         wipe: superblock
         preserve: false
-      - 
+      -
         type: lvm_partition
         id: lvm-root
         volgroup: vg-0
